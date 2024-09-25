@@ -12,7 +12,10 @@ const dadosParaTeste = [
     habitat: "Lago Sul",
     comportamento: "Muito ativa, gosta de nadar no lado durante a manhã.",
     dieta: "Prefere pasto fresco e frutas, especialmente maçãs.",
-    observacoes: "Costuma socializar com Diógenes, muitas vezes são vistos juntos."
+    observacoes: "Costuma socializar com Diógenes, muitas vezes são vistos juntos.",
+    imagens: [],
+    criadoEm: null,
+    atualizadoEm: null
   },
   {
     id: "2",
@@ -23,7 +26,10 @@ const dadosParaTeste = [
     habitat: "Floresta Oeste",
     comportamento: "Não socializa bem com outras capivaras, frequentemente vista descansando á sombra.",
     dieta: "Consome uma variedade de vegetação, incluindo folhas e capim.",
-    observacoes: null
+    imagens: [],
+    observacoes: null,
+    criadoEm: null,
+    atualizadoEm: null
   }
 ]
 
@@ -31,8 +37,14 @@ router.get("/", (req, res) => {
 
   const { habitat } = req.query
 
+  if(dadosParaTeste.length == 0){
+    return res.status(404).json({
+      message: "Nenhum registro encontrado."
+    })
+  }
+
   if(habitat) {
-    const filtro = dadosParaTeste.filter(item => item.habitat.toLowerCase() === habitat.toLocaleLowerCase())
+    const filtro = dadosParaTeste.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
     res.status(200).json(filtro)
 
   } else {
