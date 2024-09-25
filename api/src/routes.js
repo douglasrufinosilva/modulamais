@@ -28,7 +28,16 @@ const dadosParaTeste = [
 ]
 
 router.get("/", (req, res) => {
-  res.status(200).json(dadosParaTeste)
+
+  const { habitat } = req.query
+
+  if(habitat) {
+    const filtro = dadosParaTeste.filter(item => item.habitat.toLowerCase() === habitat.toLocaleLowerCase())
+    res.status(200).json(filtro)
+
+  } else {
+      res.status(200).json(dadosParaTeste)
+  }
 })
 
 router.post("/", (req, res) => {
