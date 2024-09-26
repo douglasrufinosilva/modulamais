@@ -5,25 +5,26 @@ const router = express.Router()
 router.get("/", async (req, res) => {
 
   try {
-    const [dados] = await conectiondB.execute('SELECT * FROM capivara')
+    const [dataDb] = await conectiondB.execute('SELECT * FROM capivara')
     const { habitat } = req.query
 
-    if (dados.length == 0) {
+    if (dataDb.length == 0) {
       return res.status(404).json({
         message: "Nenhum registro encontrado."
       })
     }
 
     if (habitat) {
-      const filtro = dados.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
+      const filtro = dataDb.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
       res.status(200).json(filtro)
 
     } else {
-      res.status(200).json(dados)
+      res.status(200).json(dataDb)
     }
 
   } catch (error) {
     console.error("Erro ao  buscar dados.")
+
     return res.status(500).json({
       message: "Erro ao buscar dados"
     })
@@ -55,13 +56,17 @@ router.post("/", async (req, res) => {
 
   } catch (error) {
     console.error("Erro ao criar Registro.")
+
+    return res.status(500).json({
+      message: "Erro ao criar registro."
+    })
   }
 })
 
 router.put("/:id", (req, res) => {
   const { id } = req.params
 
-  const register = dadosParaTeste.find(item => item.id === id)
+  const register = dataDb.find(item => item.id === id)
 
   if (!register) {
     return res.status(404).json({
@@ -76,22 +81,29 @@ router.put("/:id", (req, res) => {
   })
 })
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params
-  const updatedRegisters = dadosParaTeste.filter(item => item.id != id)
+router.delete("/:id", async (req, res) => {
 
-  if (updatedRegisters.length === dadosParaTeste.length) {
-    return res.status(404).json({
-      message: "Registro não encontrado."
+  try {
+    const { id } = req.params
+    const [result] = await conectiondB.execute("DELETE FROM capivara WHERE id = ?", [id])
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "Registro não encontrado."
+      })
+    }
+
+    res.status(200).json({
+      message: "Registro deletado."
+    })
+
+  } catch (error) {
+    console.error("Erro ao deletar Registro.")
+
+    return res.status(500).json({
+      message: "Erro ao deletar registro."
     })
   }
-
-  dadosParaTeste.length = 0
-  dadosParaTeste.push(...updatedRegisters)
-
-  res.status(200).json({
-    message: "Registro deletado."
-  })
 })
 
 export { router }
