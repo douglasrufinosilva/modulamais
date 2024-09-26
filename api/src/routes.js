@@ -5,23 +5,23 @@ const router = express.Router()
 router.get("/", async (req, res) => {
 
   try {
-    const [dados] = await conectiondB.query('SELECT * FROM capivara')
+    const [dados] = await conectiondB.execute('SELECT * FROM capivara')
     const { habitat } = req.query
 
-    if(dados.length == 0){
+    if (dados.length == 0) {
       return res.status(404).json({
         message: "Nenhum registro encontrado."
       })
     }
-  
-    if(habitat) {
+
+    if (habitat) {
       const filtro = dados.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
       res.status(200).json(filtro)
-  
+
     } else {
-        res.status(200).json(dados)
+      res.status(200).json(dados)
     }
-    
+
   } catch (error) {
     console.error("Erro ao  buscar dados.")
     return res.status(500).json({
@@ -30,36 +30,32 @@ router.get("/", async (req, res) => {
   }
 })
 
-router.post("/", (req, res) => {
-  const {
-    id,
-    nome = null,
-    idade = null,
-    peso = null,
-    statusSaude = null,
-    habitat = null,
-    comportamento = null,
-    dieta = null,
-    observacoes = null
-  } = req.body;
+router.post("/", async (req, res) => {
 
-  const newRegister = {
-    id,
-    nome,
-    idade,
-    peso,
-    statusSaude,
-    habitat,
-    comportamento,
-    dieta,
-    observacoes
+  try {
+    const {
+      nome = null,
+      idade = null,
+      peso = null,
+      statusSaude = null,
+      habitat = null,
+      comportamento = null,
+      dieta = null,
+      observacao = null
+    } = req.body;
+
+    const [result] = await conectiondB.execute(
+      "INSERT INTO capivara (nome, idade, peso, statusSaude, habitat, comportamento, dieta, observacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [nome, idade, peso, statusSaude, habitat, comportamento, dieta, observacao]
+    )
+
+    res.status(201).json({
+      message: "Registro criado."
+    })
+
+  } catch (error) {
+    console.error("Erro ao criar Registro.")
   }
-
-  dadosParaTeste.push(newRegister)
-
-  res.status(201).json({
-    message: "Registro criado."
-  })
 })
 
 router.put("/:id", (req, res) => {
@@ -84,7 +80,7 @@ router.delete("/:id", (req, res) => {
   const { id } = req.params
   const updatedRegisters = dadosParaTeste.filter(item => item.id != id)
 
-  if(updatedRegisters.length === dadosParaTeste.length){
+  if (updatedRegisters.length === dadosParaTeste.length) {
     return res.status(404).json({
       message: "Registro não encontrado."
     })
