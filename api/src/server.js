@@ -1,6 +1,6 @@
 import express from 'express'
 import 'dotenv/config'
-import mysql from 'mysql'
+import mysql from 'mysql2'
 import { router as routes } from './routes.js'
 
 const app = express()

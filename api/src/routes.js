@@ -1,54 +1,36 @@
 import express from 'express'
-
+import { conectiondB } from './server.js'
 const router = express.Router()
 
-const dadosParaTeste = [
-  {
-    id: "1",
-    nome: "Senhorita Bigode",
-    idade: 4,
-    peso: 65,
-    statusSaude: "Saudável",
-    habitat: "Lago Sul",
-    comportamento: "Muito ativa, gosta de nadar no lado durante a manhã.",
-    dieta: "Prefere pasto fresco e frutas, especialmente maçãs.",
-    observacoes: "Costuma socializar com Diógenes, muitas vezes são vistos juntos.",
-    imagens: [],
-    criadoEm: null,
-    atualizadoEm: null
-  },
-  {
-    id: "2",
-    nome: "Helena",
-    idade: 3,
-    peso: 58,
-    statusSaude: "Saudável",
-    habitat: "Floresta Oeste",
-    comportamento: "Não socializa bem com outras capivaras, frequentemente vista descansando á sombra.",
-    dieta: "Consome uma variedade de vegetação, incluindo folhas e capim.",
-    imagens: [],
-    observacoes: null,
-    criadoEm: null,
-    atualizadoEm: null
-  }
-]
+router.get("/", async (req, res) => {
 
-router.get("/", (req, res) => {
+  try {
 
-  const { habitat } = req.query
+    const [dados] = await conectiondB.promise().query('SELECT * FROM capivara')
 
-  if(dadosParaTeste.length == 0){
-    return res.status(404).json({
-      message: "Nenhum registro encontrado."
+    console.log(dados)
+
+    const { habitat } = req.query
+  
+    if(dados.length == 0){
+      return res.status(404).json({
+        message: "Nenhum registro encontrado."
+      })
+    }
+  
+    if(habitat) {
+      const filtro = dados.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
+      res.status(200).json(filtro)
+  
+    } else {
+        res.status(200).json(dados)
+    }
+    
+  } catch (error) {
+    console.error("Erro ao  buscar dados.")
+    return res.status(500).json({
+      message: "Erro ao buscar dados"
     })
-  }
-
-  if(habitat) {
-    const filtro = dadosParaTeste.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
-    res.status(200).json(filtro)
-
-  } else {
-      res.status(200).json(dadosParaTeste)
   }
 })
 
