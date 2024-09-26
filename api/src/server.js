@@ -7,10 +7,10 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 const conectiondB = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: 'registro-capivaras'
+  database: process.env.DB_DATABASE
 })
 
 conectiondB.connect((error) => {
