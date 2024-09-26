@@ -23,13 +23,14 @@ router.get("/", async (req, res) => {
     }
 
   } catch (error) {
-    console.error("Erro ao  buscar dados.")
+    console.error("Erro ao buscar dados.")
 
-    return res.status(500).json({
-      message: "Erro ao buscar dados"
+    return res.status(404).json({
+      message: "Erro ao buscar dados."
     })
   }
 })
+
 
 router.post("/", async (req, res) => {
 
@@ -57,29 +58,43 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error("Erro ao criar Registro.")
 
-    return res.status(500).json({
+    return res.status(404).json({
       message: "Erro ao criar registro."
     })
   }
 })
 
-router.put("/:id", (req, res) => {
-  const { id } = req.params
 
-  const register = dataDb.find(item => item.id === id)
+router.put("/:id", async (req, res) => {
 
-  if (!register) {
+  try {
+
+    const { peso, statusSaude, comportamento, dieta, observacao } = req.body
+    const { id } = req.params
+    const [result] = await conectiondB.execute(
+      "UPDATE capivara SET peso = COALESCE(?, peso), statusSaude = COALESCE(?, statusSaude), comportamento = COALESCE(?, comportamento), dieta = COALESCE(?, dieta), observacao = COALESCE(?, observacao) WHERE id = ?",
+      [peso, statusSaude, comportamento, dieta, observacao, id]
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "Registro não encontrado."
+      })
+    }
+
+    res.status(200).json({
+      message: "Dados atualizados."
+    })
+
+  } catch (error) {
+    console.error("Erro ao atualizar Registro.")
+
     return res.status(404).json({
-      message: "Registro não encontrado."
+      message: "Erro ao atualizar registro."
     })
   }
-
-  Object.assign(register, req.body)
-
-  res.status(200).json({
-    message: "Dados atualizados."
-  })
 })
+
 
 router.delete("/:id", async (req, res) => {
 
