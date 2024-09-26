@@ -1,12 +1,12 @@
 import express from 'express'
 import 'dotenv/config'
-import mysql from 'mysql2'
+import mysql from 'mysql2/promise'
 import { router as routes } from './routes.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
-const conectiondB = mysql.createConnection({
+const conectiondB = await mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: process.env.DB_PASSWORD,

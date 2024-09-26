@@ -5,13 +5,9 @@ const router = express.Router()
 router.get("/", async (req, res) => {
 
   try {
-
-    const [dados] = await conectiondB.promise().query('SELECT * FROM capivara')
-
-    console.log(dados)
-
+    const [dados] = await conectiondB.query('SELECT * FROM capivara')
     const { habitat } = req.query
-  
+
     if(dados.length == 0){
       return res.status(404).json({
         message: "Nenhum registro encontrado."
