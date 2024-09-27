@@ -1,5 +1,10 @@
 import express from 'express'
 import { conectiondB } from './server.js'
+import multer from 'multer'
+
+const upload = multer({
+  storage: multer.memoryStorage()
+})
 const router = express.Router()
 
 router.get("/", async (req, res) => {
@@ -32,9 +37,12 @@ router.get("/", async (req, res) => {
 })
 
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single('fotoPerfil'), async (req, res) => {
 
   try {
+
+    const fotoPerfil = req.file ? req.file.buffer : null
+
     const {
       nome = null,
       idade = null,
@@ -47,8 +55,8 @@ router.post("/", async (req, res) => {
     } = req.body;
 
     const [result] = await conectiondB.execute(
-      "INSERT INTO capivara (nome, idade, peso, statusSaude, habitat, comportamento, dieta, observacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [nome, idade, peso, statusSaude, habitat, comportamento, dieta, observacao]
+      "INSERT INTO capivara (fotoPerfil, nome, idade, peso, statusSaude, habitat, comportamento, dieta, observacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [fotoPerfil, nome, idade, peso, statusSaude, habitat, comportamento, dieta, observacao]
     )
 
     res.status(201).json({

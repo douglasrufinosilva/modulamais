@@ -14,7 +14,7 @@ const conectiondB = await mysql.createConnection({
 })
 
 conectiondB.connect((error) => {
-  if(error) {
+  if (error) {
     console.error("Erro na conexão.")
   }
 
