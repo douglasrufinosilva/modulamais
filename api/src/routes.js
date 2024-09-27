@@ -36,6 +36,29 @@ router.get("/", async (req, res) => {
   }
 })
 
+router.get("/galeria/:id", async (req, res) => {
+
+  try {
+    const { id } = req.params
+    const [dataDb] = await conectiondB.execute("SELECT * FROM galeriacapivara WHERE capivara_id = ?;", [id])
+
+    if (dataDb.length == 0) {
+      return res.status(404).json({
+        message: "Nenhuma imagem encontrada."
+      })
+    }
+
+    res.status(200).json(dataDb)
+
+  } catch (error) {
+    console.error("Erro ao carregar imagens.")
+
+    return res.status(500).json({
+      message: "Erro ao carregar imagens."
+    })
+  }
+})
+
 
 router.post("/", upload.single('fotoPerfil'), async (req, res) => {
 
@@ -68,6 +91,29 @@ router.post("/", upload.single('fotoPerfil'), async (req, res) => {
 
     return res.status(404).json({
       message: "Erro ao criar registro."
+    })
+  }
+})
+
+
+router.post("/galeria/:id", upload.single('imagemGaleria'), async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+    const imagemGaleria = req.file ? req.file.buffer : null
+
+    const [result] = await conectiondB.execute("INSERT INTO galeriacapivara (capivara_id, foto) VALUES (?, ?);", [id, imagemGaleria])
+
+    res.status(201).json({
+      message: "Imagem adicionada a galeria."
+
+    })
+  } catch (error) {
+    console.error("Erro ao adicionar imagem.")
+
+    return res.status(500).json({
+      message: "Erro ao adicionar imagem."
     })
   }
 })
