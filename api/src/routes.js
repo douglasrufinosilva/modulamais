@@ -30,11 +30,33 @@ router.get("/", async (req, res) => {
   } catch (error) {
     console.error("Erro ao buscar dados.")
 
-    return res.status(404).json({
+    return res.status(500).json({
       message: "Erro ao buscar dados."
     })
   }
 })
+
+
+router.get("/detalhes/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+  
+    const [dataDb] = await conectiondB.execute("SELECT * FROM capivara WHERE id = ?;", [id])
+
+    res.status(200).json(dataDb)
+    
+  } catch (error) {
+    console.error("Erro ao buscar dados desse registro.")
+
+    return res.status(500).json({
+      message: "Erro ao buscar dados desse registro."
+    })
+  }
+
+})
+
 
 router.get("/galeria/:id", async (req, res) => {
 
