@@ -1,9 +1,11 @@
 import express from 'express'
 import 'dotenv/config'
 import mysql from 'mysql2/promise'
+import cors from 'cors'
 import { router as routes } from './routes.js'
 
 const app = express()
+app.use(cors())
 const PORT = process.env.PORT || 3000
 
 const conectiondB = await mysql.createConnection({

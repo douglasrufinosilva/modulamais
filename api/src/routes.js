@@ -19,12 +19,19 @@ router.get("/", async (req, res) => {
       })
     }
 
+    const data = dataDb.map(item => {
+      return {
+        ...item,
+        fotoPerfil: item.fotoPerfil ? `data:image/jpg;base64,${item.fotoPerfil.toString('base64')}` : null
+      }
+    })
+
     if (habitat) {
-      const filtro = dataDb.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
+      const filtro = data.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
       res.status(200).json(filtro)
 
     } else {
-      res.status(200).json(dataDb)
+      res.status(200).json(data)
     }
 
   } catch (error) {
@@ -42,11 +49,11 @@ router.get("/detalhes/:id", async (req, res) => {
   try {
 
     const { id } = req.params
-  
+
     const [dataDb] = await conectiondB.execute("SELECT * FROM capivara WHERE id = ?;", [id])
 
     res.status(200).json(dataDb)
-    
+
   } catch (error) {
     console.error("Erro ao buscar dados desse registro.")
 
