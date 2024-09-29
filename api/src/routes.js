@@ -11,7 +11,6 @@ router.get("/", async (req, res) => {
 
   try {
     const [dataDb] = await conectiondB.execute('SELECT * FROM capivara')
-    const { habitat } = req.query
 
     if (dataDb.length == 0) {
       return res.status(404).json({
@@ -26,13 +25,7 @@ router.get("/", async (req, res) => {
       }
     })
 
-    if (habitat) {
-      const filtro = data.filter(item => item.habitat.split(' ').join('').toLowerCase() === habitat.toLowerCase())
-      res.status(200).json(filtro)
-
-    } else {
-      res.status(200).json(data)
-    }
+    res.status(200).json(data)
 
   } catch (error) {
     console.error("Erro ao buscar dados.")
@@ -40,6 +33,29 @@ router.get("/", async (req, res) => {
     return res.status(500).json({
       message: "Erro ao buscar dados."
     })
+  }
+})
+
+
+router.get("/habitat", async (req, res) => {
+  try {
+
+    const [dataDb] = await conectiondB.execute("SELECT DISTINCT habitat FROM capivara")
+
+    if(dataDb.length === 0) {
+      return res.status(404).json({
+        message: "Nenhum dado encontrado para a busca."
+      })
+    }
+
+    res.status(200).json(dataDb.map(item => item.habitat))
+
+  } catch(error) {
+      console.log("Nenhum dado retornado para a busca.")
+
+      return res.status(500).json({
+        message: "Erro ao buscar dados"
+      })
   }
 })
 
