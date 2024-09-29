@@ -5,6 +5,7 @@ import multer from 'multer'
 const upload = multer({
   storage: multer.memoryStorage()
 })
+
 const router = express.Router()
 
 router.get("/", async (req, res) => {
@@ -42,7 +43,7 @@ router.get("/habitat", async (req, res) => {
 
     const [dataDb] = await conectiondB.execute("SELECT DISTINCT habitat FROM capivara")
 
-    if(dataDb.length === 0) {
+    if (dataDb.length === 0) {
       return res.status(404).json({
         message: "Nenhum dado encontrado para a busca."
       })
@@ -50,12 +51,12 @@ router.get("/habitat", async (req, res) => {
 
     res.status(200).json(dataDb.map(item => item.habitat))
 
-  } catch(error) {
-      console.log("Nenhum dado retornado para a busca.")
+  } catch (error) {
+    console.log("Nenhum dado retornado para a busca.")
 
-      return res.status(500).json({
-        message: "Erro ao buscar dados"
-      })
+    return res.status(500).json({
+      message: "Erro ao buscar dados"
+    })
   }
 })
 
@@ -68,7 +69,16 @@ router.get("/detalhes/:id", async (req, res) => {
 
     const [dataDb] = await conectiondB.execute("SELECT * FROM capivara WHERE id = ?;", [id])
 
-    res.status(200).json(dataDb)
+    const data = dataDb.map(item => {
+      return {
+        ...item,
+        fotoPerfil: item.fotoPerfil ? `data:image/jpg;base64,${item.fotoPerfil.toString('base64')}` : null
+      }
+    })
+
+    res.status(200).json(data)
+
+
 
   } catch (error) {
     console.error("Erro ao buscar dados desse registro.")
@@ -79,31 +89,6 @@ router.get("/detalhes/:id", async (req, res) => {
   }
 
 })
-
-
-router.get("/galeria/:id", async (req, res) => {
-
-  try {
-    const { id } = req.params
-    const [dataDb] = await conectiondB.execute("SELECT * FROM galeriacapivara WHERE capivara_id = ?;", [id])
-
-    if (dataDb.length == 0) {
-      return res.status(404).json({
-        message: "Nenhuma imagem encontrada."
-      })
-    }
-
-    res.status(200).json(dataDb)
-
-  } catch (error) {
-    console.error("Erro ao carregar imagens.")
-
-    return res.status(500).json({
-      message: "Erro ao carregar imagens."
-    })
-  }
-})
-
 
 router.post("/", upload.single('fotoPerfil'), async (req, res) => {
 
@@ -140,39 +125,17 @@ router.post("/", upload.single('fotoPerfil'), async (req, res) => {
   }
 })
 
-
-router.post("/galeria/:id", upload.single('imagemGaleria'), async (req, res) => {
-
-  try {
-
-    const { id } = req.params
-    const imagemGaleria = req.file ? req.file.buffer : null
-
-    const [result] = await conectiondB.execute("INSERT INTO galeriacapivara (capivara_id, foto) VALUES (?, ?);", [id, imagemGaleria])
-
-    res.status(201).json({
-      message: "Imagem adicionada a galeria."
-
-    })
-  } catch (error) {
-    console.error("Erro ao adicionar imagem.")
-
-    return res.status(500).json({
-      message: "Erro ao adicionar imagem."
-    })
-  }
-})
-
-
-router.put("/:id", async (req, res) => {
+router.put("/detalhes/:id", upload.single('fotoPerfil'), async (req, res) => {
 
   try {
 
-    const { peso, statusSaude, comportamento, dieta, observacao } = req.body
+    const fotoPerfil = req.file ? req.file.buffer : null
+
+    const { peso, statusSaude, habitat, comportamento, dieta, observacao } = req.body
     const { id } = req.params
     const [result] = await conectiondB.execute(
-      "UPDATE capivara SET peso = COALESCE(?, peso), statusSaude = COALESCE(?, statusSaude), comportamento = COALESCE(?, comportamento), dieta = COALESCE(?, dieta), observacao = COALESCE(?, observacao) WHERE id = ?",
-      [peso, statusSaude, comportamento, dieta, observacao, id]
+      "UPDATE capivara SET fotoPerfil = COALESCE(?, fotoPerfil), peso = COALESCE(?, peso), statusSaude = COALESCE(?, statusSaude), habitat = COALESCE(?, habitat), comportamento = COALESCE(?, comportamento), dieta = COALESCE(?, dieta), observacao = COALESCE(?, observacao) WHERE id = ?",
+      [fotoPerfil, peso, statusSaude, habitat, comportamento, dieta, observacao, id]
     )
 
     if (result.affectedRows === 0) {
