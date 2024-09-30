@@ -10,7 +10,12 @@
 - git clone https://github.com/douglasrufinosilva/catalogo-teste.git
 - cd catalogo-teste/api
 - Instale as dependências (npm install)
+- Tenha o mysql instalado, e inclua os dados do seu banco no arquivo .env
+- O .env.example mostra um exemplo das variaveis que devem ser criadas para passar as informações. Crie um arquivo .env e insira elas.
+- O projeto inclui uma função que cria automaticamente a tabela caso ela não exista. Mas se certique de que tem um schema criado, que é a informação que voce vai incluir no 'DB_DATABASE' incluso no .env
 - npm run dev
+
+Obs: Caso tenha problemas em puxar a tabela automaticamente, vou deixar um exemplo da tabela no .env.
 
 ### EndPoints
 
