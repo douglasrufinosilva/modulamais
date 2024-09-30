@@ -7,10 +7,10 @@
 
 ### Como obter o projeto.
 
-**1 - git clone https://github.com/douglasrufinosilva/catalogo-teste.git
-**2 - cd catalogo-teste/api
-**3 - Instale as dependências (npm install)
-**4 - npm run dev
+- git clone https://github.com/douglasrufinosilva/catalogo-teste.git
+- cd catalogo-teste/api
+- Instale as dependências (npm install)
+- npm run dev
 
 ### EndPoints
 
