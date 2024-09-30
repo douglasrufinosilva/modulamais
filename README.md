@@ -8,7 +8,7 @@
 ### Como obter o projeto.
 
 - git clone https://github.com/douglasrufinosilva/catalogo-teste.git
-- cd catalogo-teste/api
+- cd api
 - Instale as dependências (npm install)
 - Tenha o mysql instalado, e inclua os dados do seu banco no arquivo .env
 - O .env.example mostra um exemplo das variaveis que devem ser criadas para passar as informações. Crie um arquivo .env e insira elas.
