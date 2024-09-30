@@ -17,7 +17,7 @@
 
 - Obs: Caso tenha problemas em puxar a tabela automaticamente, vou deixar um exemplo da tabela no .env.
 
-- Obs2: Lembre se de colocar a mesma rota (Ex: http://localhost:3000) na aplicação front end para poder integrar de forma correta, ela tambem vai conter um .env para incluir a url, 'BASE_URL'.
+- Obs2: A aplicação front está fazendo integração (axios) usando o 'http://localhost:3000'. Então na 'PORT' que está no .env, coloque 3000 para fazer a integração de forma correta.
 
 ### EndPoints
 
