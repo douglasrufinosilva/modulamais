@@ -8,6 +8,23 @@ const app = express()
 app.use(cors())
 const PORT = process.env.PORT || 3000
 
+const table = `
+    CREATE TABLE IF NOT EXISTS capivara (
+      id INT NOT NULL AUTO_INCREMENT,
+      fotoPerfil LONGBLOB,
+      nome VARCHAR(100) NOT NULL,
+      idade INT DEFAULT NULL,
+      peso INT DEFAULT NULL,
+      statusSaude VARCHAR(45) DEFAULT NULL,
+      habitat VARCHAR(100) DEFAULT NULL,
+      comportamento TEXT,
+      dieta TEXT,
+      observacao TEXT,
+      criadoEm DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      atualizadoEm DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    )`
+
 const conectiondB = await mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -22,6 +39,14 @@ conectiondB.connect((error) => {
 
   console.log("Banco de dados conectado.")
 })
+
+try {
+  await conectiondB.query(table)
+
+  console.log("Tabela 'capivara' criada ou já existente.")
+} catch (error) {
+  console.error("Erro ao criar tabela.")
+}
 
 app.use(express.json())
 app.use(routes)
