@@ -15,7 +15,9 @@
 - O projeto inclui uma função que cria automaticamente a tabela caso ela não exista. Mas se certique de que tem um schema criado, que é a informação que voce vai incluir no 'DB_DATABASE' incluso no .env
 - npm run dev
 
-Obs: Caso tenha problemas em puxar a tabela automaticamente, vou deixar um exemplo da tabela no .env.
+- Obs: Caso tenha problemas em puxar a tabela automaticamente, vou deixar um exemplo da tabela no .env.
+
+- Obs2: Lembre se de colocar a mesma rota (Ex: http://localhost:3000) na aplicação front end para poder integrar de forma correta, ela tambem vai conter um .env para incluir a url, 'BASE_URL'.
 
 ### EndPoints
 
