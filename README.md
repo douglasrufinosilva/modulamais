@@ -1,4 +1,4 @@
-## Uma api simples que permite criar registro de capivaras. Ela permite criar, ler, atualizao e deletar os registros (CRUD). Ela foi feita com NodeJs usando express, e MySQL no banco de dados.
+### Uma api simples que permite criar registro de capivaras. Ela permite criar, ler, atualizao e deletar os registros (CRUD). Ela foi feita com NodeJs usando express, e MySQL no banco de dados.
 
 ### Para rodar essa aplicação você precisa:
 
