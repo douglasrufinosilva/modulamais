@@ -13,18 +13,19 @@ router.get("/", async (req, res) => {
   try {
     const [dataDb] = await conectiondB.execute('SELECT * FROM capivara')
 
-    if (dataDb.length == 0) {
-      return res.status(404).json({
-        message: "Nenhum registro encontrado."
-      })
-    }
-
     const data = dataDb.map(item => {
       return {
         ...item,
         fotoPerfil: item.fotoPerfil ? `data:image/jpg;base64,${item.fotoPerfil.toString('base64')}` : null
       }
     })
+
+    if (data.length == 0) {
+      return res.status(200).json({
+        message: "Nenhum registro encontrado.",
+        data: []
+      })
+    }
 
     res.status(200).json(data)
 
@@ -44,8 +45,9 @@ router.get("/habitat", async (req, res) => {
     const [dataDb] = await conectiondB.execute("SELECT DISTINCT habitat FROM capivara")
 
     if (dataDb.length === 0) {
-      return res.status(404).json({
-        message: "Nenhum dado encontrado para a busca."
+      return res.status(200).json({
+        message: "Nenhum dado encontrado para a busca.",
+        dataDb: []
       })
     }
 
